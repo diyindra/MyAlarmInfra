@@ -5,7 +5,9 @@ import android.app.DownloadManager
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -17,11 +19,14 @@ import com.android.volley.toolbox.Volley
 import com.android.volley.Request
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.json.JSONObject
 
 class active_alarm_list : AppCompatActivity() {
     private val alarmList = ArrayList<AlarmModel>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: AlarmAdapter
+    private lateinit var loadingBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,10 +48,12 @@ class active_alarm_list : AppCompatActivity() {
         adapter = AlarmAdapter(alarmList)
 
         recyclerView.adapter = adapter
+        loadingBar = findViewById(R.id.loadingBar)
         getAlarms()
     }
     private fun getAlarms() {
         Log.d("API_RESPONSE", "get alarm called")
+        loadingBar.visibility = View.VISIBLE
 
 
         val url = "http://103.123.248.212:8080/new/api/get_active_alarms"
@@ -56,6 +63,7 @@ class active_alarm_list : AppCompatActivity() {
         val request = JsonArrayRequest(
             Request.Method.GET, url, null,
             { response ->
+                loadingBar.visibility = View.GONE
 //                Log.d("API_RESPONSSE", response.toString())
 
                 for (i in 0 until response.length()) {
@@ -63,12 +71,13 @@ class active_alarm_list : AppCompatActivity() {
                     val obj = response.getJSONObject(i)
 
                     val siteId = obj.getString("site_id")
-                    val site = obj.getString("site_id")
-                    val alarm = obj.getString("alarm")
-                    val severity = obj.optString("saverity", "unknown")
+                    val al_s = JSONObject(obj.getString("alarm_string"))
+                    val site = obj.getString("site_id")+" | "+al_s.getString("site_name")
+                    val alarm = obj.getString("alarm")+"(Val:"+al_s.getString("value")+")"
+                    val severity = obj.optString("saverity", "unknown")+" | th-Hi:"+al_s.getString("thr_hi")+" | th_Lo:"+al_s.getString("thr_lo")
                     val icon = obj.optString("iconapps", "")
 
-                    Log.d("API_RESPONSE", "$obj")
+                    Log.d("API_RESPONSE", "$al_s")
                     Log.d("API_RESPONSE", "$severity - $icon")
 
                     val alarmModel = AlarmModel(site, alarm, severity, icon)
