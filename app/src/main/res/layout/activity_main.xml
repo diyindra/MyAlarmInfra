@@ -145,10 +145,12 @@
             android:textSize="30dp"
             android:textColor="@color/white"
             android:id="@+id/areaterpilih"></TextView>
+
         <Button
+            android:id="@+id/active_alarm_open"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Active Alarm"/>
+            android:text="Active Alarm" />
     </LinearLayout>
 
 

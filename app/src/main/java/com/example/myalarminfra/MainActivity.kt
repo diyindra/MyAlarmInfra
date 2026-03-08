@@ -78,8 +78,14 @@ class MainActivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         val jabotombol= findViewById<CardView>(R.id.areajabotombol)
         val jjbbtombol= findViewById<CardView>(R.id.areajbbtombol)
         val sbbtombol = findViewById<CardView>(R.id.areasbbtombol)
-        val alltombol=findViewById<CardView>(R.id.areaalltombol)
+        val alltombol = findViewById<CardView>(R.id.areaalltombol)
+        val tblShowActiveAlarm =findViewById<Button>(R.id.active_alarm_open)
 
+
+        tblShowActiveAlarm.setOnClickListener {
+            val intent = Intent(this, active_alarm_list::class.java)
+            startActivity(intent)
+        }
 
 
 
